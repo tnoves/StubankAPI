@@ -80,7 +80,7 @@ Run the `api_main.py` file, and the API will be launched at `127.0.0.1:5000`
 {
     "id": 1,
     "user_details_id": 1,
-    "username": "Foo
+    "username": "Foo"
 }
 ```
 
