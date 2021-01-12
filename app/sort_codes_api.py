@@ -1,6 +1,5 @@
 from flask import Blueprint, request, jsonify
 from app.database import db, ma
-from app.user_api import UsersSchema
 
 sort_codes_api = Blueprint('sort_codes_api', __name__)
 
