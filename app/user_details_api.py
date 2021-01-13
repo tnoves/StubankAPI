@@ -37,18 +37,23 @@ def get_user_details(id):
 # endpoint to update a specific users details from id
 @user_details_api.route('/user/details/<id>', methods=['PUT'])
 def update_user_details(id):
-    user_details = UserDetails.query.get(id)
-    firstname = request.json['firstname']
-    lastname = request.json['lastname']
-    email = request.json['email']
-    phone = request.json['phone']
-    dob = request.json['dob']
+    try:
+        user_details = UserDetails.query.get(id)
+        firstname = request.json['firstname']
+        lastname = request.json['lastname']
+        email = request.json['email']
+        phone = request.json['phone']
+        dob = request.json['dob']
 
-    user_details.firstname = firstname
-    user_details.lastname = lastname
-    user_details.email = email
-    user_details.phone = phone
-    user_details.dob = dob
+        user_details.firstname = firstname
+        user_details.lastname = lastname
+        user_details.email = email
+        user_details.phone = phone
+        user_details.dob = dob
 
-    db.session.commit()
+        db.session.commit()
+    except Exception as e:
+        db.session.rollback()
+        db.session.flush()
+
     return user_details_schema.jsonify(user_details)

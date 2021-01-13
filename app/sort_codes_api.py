@@ -29,12 +29,17 @@ def get_sort_code(id):
 # endpoint to update a specific sort code from id
 @sort_codes_api.route('/sort_code/<id>', methods=['PUT'])
 def update_sort_code(id):
-    sort_code = SortCodes.query.get(id)
-    sort_code_number = request.json['sort_code']
+    try:
+        sort_code = SortCodes.query.get(id)
+        sort_code_number = request.json['sort_code']
 
-    sort_code.sort_code = sort_code_number
+        sort_code.sort_code = sort_code_number
 
-    db.session.commit()
+        db.session.commit()
+    except Exception as e:
+        db.session.rollback()
+        db.session.flush()
+
     return sort_codes_schema.jsonify(sort_code)
 
 #endpoint to delete sort code

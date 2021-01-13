@@ -18,17 +18,19 @@ class Users(db.Model):
     username = db.Column('Username', db.String(100), unique=True)
     password = db.Column('Password', db.String(100))
     user_details_id = db.Column('UserDetailsID', db.Integer)
+    account_id = db.Column('AccountID', db.Integer)
 
-    def __init__(self, username, password, user_details_id):
+    def __init__(self, username, password, user_details_id, account_id):
         self.username = username
         self.password = password
         self.user_details_id = user_details_id
+        self.account_id = account_id
 
 # Setup Users schema
 class UsersSchema(ma.Schema):
     user_details = ma.Nested(UserDetailsSchema)
     class Meta:
-        additional = ('id', 'username', 'user_details_id')
+        additional = ('id', 'username', 'user_details_id', 'account_id')
 
 # Initialise schemas
 user_schema = UsersSchema()
@@ -45,24 +47,32 @@ def create_user():
     lastname = request.json['lastname']
     phone = request.json['phone']
 
-    user_details = UserDetails(dob=dob, email=email, firstname=firstname, lastname=lastname, phone=phone)
-    db.session.add(user_details)
-    db.session.commit()
+    try:
+        # Create account for user along with unique random account number
+        while True:
+            account_number = ''.join(random.choices(string.digits, k=8))
+            sort_code_id = 4
 
-    user = Users(username=username, password=password, user_details_id=user_details.user_details_id)
-    db.session.add(user)
-    db.session.commit()
+            account = Accounts(account_number=account_number, sort_code_id=sort_code_id)
+            db.session.add(account)
+            db.session.commit()
+            if (account.account_id != null):
+                break
 
-    # Create account for user along with unique random account number
-    while True:
-        account_number = ''.join(random.choices(string.digits, k=8))
-        sort_code_id = 4
+        account_id = account.account_id
 
-        account = Accounts(account_number=account_number, sort_code_id=sort_code_id)
-        db.session.add(account)
+        user_details = UserDetails(dob=dob, email=email, firstname=firstname, lastname=lastname, phone=phone)
+        db.session.add(user_details)
         db.session.commit()
-        if (account.account_id != null):
-            break
+
+        user = Users(username=username, password=password, user_details_id=user_details.user_details_id,
+                     account_id=account_id)
+
+        db.session.add(user)
+        db.session.commit()
+    except Exception as e:
+        db.session.rollback()
+        db.session.flush()
 
     return user_schema.jsonify(user)
 
@@ -82,13 +92,18 @@ def get_all_users():
 # endpoint to update a specific user from id
 @user_api.route('/user/<id>', methods=['PUT'])
 def update_user(id):
-    user = Users.query.get(id)
-    print (request.json['username'])
-    username = request.json['username']
+    try:
+        user = Users.query.get(id)
+        print (request.json['username'])
+        username = request.json['username']
 
-    user.username = username
+        user.username = username
 
-    db.session.commit()
+        db.session.commit()
+    except Exception as e:
+        db.session.rollback()
+        db.session.flush()
+
     return user_schema.jsonify(user)
 
 #endpoint to delete user

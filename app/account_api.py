@@ -40,14 +40,19 @@ def get_account_from_card(account_number):
 # endpoint to update a specific account from id
 @account_api.route('/account/<id>', methods=['PUT'])
 def update_account(id):
-    account = Accounts.query.get(id)
-    account_number = request.json['account_number']
-    sort_code_id = request.json['sort_code_id']
+    try:
+        account = Accounts.query.get(id)
+        account_number = request.json['account_number']
+        sort_code_id = request.json['sort_code_id']
 
-    account.account_number = account_number
-    account.sort_code_id = sort_code_id
+        account.account_number = account_number
+        account.sort_code_id = sort_code_id
 
-    db.session.commit()
+        db.session.commit()
+    except Exception as e:
+        db.session.rollback()
+        db.session.flush()
+    
     return accounts_schema.jsonify(account)
 
 #endpoint to delete account

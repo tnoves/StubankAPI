@@ -45,12 +45,16 @@ def create_transaction():
     payment_amount = request.json['payment_amount']
     payment_type = request.json['payment_type']
 
-    transaction = Transactions(card_number=card_number, balance=balance, date=date,
-                               payment_account_id=payment_account_id, payment_amount=payment_amount,
-                               payment_type=payment_type)
+    try:
+        transaction = Transactions(card_number=card_number, balance=balance, date=date,
+                                   payment_account_id=payment_account_id, payment_amount=payment_amount,
+                                   payment_type=payment_type)
 
-    db.session.add(transaction)
-    db.session.commit()
+        db.session.add(transaction)
+        db.session.commit()
+    except Exception as e:
+        db.session.rollback()
+        db.session.flush()
 
     return transaction_schema.jsonify(transaction)
 
@@ -70,20 +74,25 @@ def get_all_transactions(card_number):
 # endpoint to update a specific transaction from id
 @transaction_api.route('/transaction/<id>', methods=['PUT'])
 def update_transaction(id):
-    transaction = Transactions.query.get(id)
-    card_number = request.json['card_number']
-    balance = request.json['balance']
-    date = request.json['date']
-    payment_amount = request.json['payment_amount']
-    payment_type = request.json['payment_type']
+    try:
+        transaction = Transactions.query.get(id)
+        card_number = request.json['card_number']
+        balance = request.json['balance']
+        date = request.json['date']
+        payment_amount = request.json['payment_amount']
+        payment_type = request.json['payment_type']
 
-    transaction.card_number = card_number
-    transaction.balance = balance
-    transaction.date = date
-    transaction.payment_amount = payment_amount
-    transaction.payment_type = payment_type
+        transaction.card_number = card_number
+        transaction.balance = balance
+        transaction.date = date
+        transaction.payment_amount = payment_amount
+        transaction.payment_type = payment_type
 
-    db.session.commit()
+        db.session.commit()
+    except Exception as e:
+        db.session.rollback()
+        db.session.flush()
+
     return transaction_schema.jsonify(transaction)
 
 #endpoint to delete transaction

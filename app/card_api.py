@@ -1,4 +1,9 @@
+import random
+import string
+
 from flask import Blueprint, request, jsonify
+from sqlalchemy import null
+
 from app.database import db, ma
 from app.user_api import UsersSchema
 from app.account_api import AccountsSchema
@@ -45,7 +50,6 @@ cards_schema = CardsSchema(many=True)
 # endpoint to create a card
 @card_api.route('/card/', methods=['POST'])
 def create_card():
-    card_number = request.json['card_number']
     account_id = request.json['account_id']
     active = request.json['active']
     balance = request.json['balance']
@@ -55,11 +59,22 @@ def create_card():
     payment_processor = request.json['payment_processor']
     user_id = request.json['user_id']
 
-    card = Cards(card_number=card_number, account_id=account_id, active=active, balance=balance, cvc_code=cvc_code,
-                 card_type=card_type, expiry_date=expiry_date, payment_processor=payment_processor, user_id=user_id)
+    # Create card for user along with unique random card number
+    while True:
+        try:
+            card_number = ''.join(random.choices(string.digits, k=16))
 
-    db.session.add(card)
-    db.session.commit(card)
+            card = Cards(card_number=card_number, account_id=account_id, active=active, balance=balance, cvc_code=cvc_code,
+                         card_type=card_type, expiry_date=expiry_date, payment_processor=payment_processor, user_id=user_id)
+            db.session.add(card)
+            db.session.commit()
+
+            if (card.card_number != null):
+                break
+        except Exception as e:
+            db.session.rollback()
+            db.session.flush()
+            continue
 
     return card_schema.jsonify(card)
 
@@ -79,21 +94,30 @@ def get_all_cards(id):
 # endpoint to update a specific card from id
 @card_api.route('/card/<id>', methods=['PUT'])
 def update_card(id):
-    card = Cards.query.get(id)
-    active = request.json['username']
-    balance = request.json['firstname']
+    try:
+        card = Cards.query.get(id)
+        active = request.json['username']
+        balance = request.json['firstname']
 
-    card.active = active
-    card.balance = balance
+        card.active = active
+        card.balance = balance
 
-    db.session.commit()
+        db.session.commit()
+    except Exception as e:
+        db.session.rollback()
+        db.session.flush()
+
     return card_schema.jsonify(card)
 
 #endpoint to delete card
 @card_api.route('/card/<id>', methods=['DELETE'])
 def delete_card(id):
-    card = Cards.query.get(id)
-    db.session.delete(card)
-    db.session.commit()
+    try:
+        card = Cards.query.get(id)
+        db.session.delete(card)
+        db.session.commit()
+    except Exception as e:
+        db.session.rollback()
+        db.session.flush()
 
     return card_schema.jsonify(card)

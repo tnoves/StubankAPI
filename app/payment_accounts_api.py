@@ -31,10 +31,14 @@ def create_payment_account():
     account_id = request.json['account_id']
     user_details_id = request.json['user_details_id']
 
-    payment_account = PaymentAccounts(account_id=account_id, user_details_id=user_details_id)
+    try:
+        payment_account = PaymentAccounts(account_id=account_id, user_details_id=user_details_id)
 
-    db.session.add(payment_account)
-    db.session.commit()
+        db.session.add(payment_account)
+        db.session.commit()
+    except Exception as e:
+        db.session.rollback()
+        db.session.flush()
 
     return payment_account_schema.jsonify(payment_account)
 
@@ -47,14 +51,19 @@ def get_payment_account(id):
 # endpoint to update a specific payment account from id
 @payment_accounts_api.route('/payment_account/<id>', methods=['PUT'])
 def update_payment_account(id):
-    payment_account = PaymentAccounts.query.get(id)
-    account_id = request.json['account_id']
-    user_details_id = request.json['user_details_id']
+    try:
+        payment_account = PaymentAccounts.query.get(id)
+        account_id = request.json['account_id']
+        user_details_id = request.json['user_details_id']
 
-    payment_account.account_id = account_id
-    payment_account.user_details_id = user_details_id
+        payment_account.account_id = account_id
+        payment_account.user_details_id = user_details_id
 
-    db.session.commit()
+        db.session.commit()
+    except Exception as e:
+        db.session.rollback()
+        db.session.flush()
+
     return payment_account_schema.jsonify(payment_account)
 
 #endpoint to delete payment account
