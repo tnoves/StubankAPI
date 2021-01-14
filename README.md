@@ -74,13 +74,30 @@ Run the `api_main.py` file, and the API will be launched at `127.0.0.1:5000`
 
 `POST 127.0.0.1:5000/user/`
 
+###### Request
+
+Creates user, user_details and account automatically
+
+```bash
+{
+    "username": "Foo",
+    "password": "Bar",
+    "dob": 0001-01-01,
+    "email": "foo@test.com",
+    "firstname": "Foo",
+    "lastname": "Ipsum",
+    "phone": 01234984653
+}
+```
+
 ###### Response
 
 ```bash
 {
     "id": 1,
     "user_details_id": 1,
-    "username": "Foo"
+    "username": "Foo",
+    "account_id": 1
 }
 ```
 
@@ -95,7 +112,8 @@ Run the `api_main.py` file, and the API will be launched at `127.0.0.1:5000`
 {
     "id": 1,
     "user_details_id": 1,
-    "username": "Foo"
+    "username": "Foo",
+    "account_id": 1
 }
 ```
 
@@ -111,7 +129,8 @@ Run the `api_main.py` file, and the API will be launched at `127.0.0.1:5000`
     {
         "id": 1,
         "user_details_id": 1,
-        "username": "Foo"
+        "username": "Foo",
+        "account_id": 1
     }   
 ]
 ```
@@ -127,7 +146,8 @@ Run the `api_main.py` file, and the API will be launched at `127.0.0.1:5000`
 {
     "id": 1,
     "user_details_id": 1,
-    "username:" "Fooo"
+    "username:" "Fooo",
+    "account_id": 1
 }
 ```
 
@@ -361,6 +381,19 @@ Run the `api_main.py` file, and the API will be launched at `127.0.0.1:5000`
 
 `POST 127.0.0.1:5000/transaction/`
 
+###### Request
+
+```bash
+{
+    "card_number": 93748572946103746,
+    "balance": 25.00,
+    "date": 0001-01-01,
+    "payment_account_id": 1,
+    "payment_amount": 25.00,
+    "payment_type": "credit"
+}
+```
+
 ###### Response
 
 ```bash
@@ -446,6 +479,16 @@ Run the `api_main.py` file, and the API will be launched at `127.0.0.1:5000`
 #### Create payment account
 
 `POST 127.0.0.1:5000/payment_account/`
+
+###### Request
+
+```bash
+{
+    "account_id": 1,
+    "user_details_id": 1
+}
+```
+
 
 ###### Response
 
