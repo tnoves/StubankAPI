@@ -13,7 +13,7 @@ card_api = Blueprint('card_api', __name__)
 # Setup Cards model from database
 class Cards(db.Model):
     __tablename__ = 'Cards'
-    card_number = db.Column('16DigitCardNo', db.Integer, primary_key=True)
+    card_number = db.Column('16DigitCardNo', db.String(100), primary_key=True)
     account_id = db.Column('AccountID', db.Integer)
     active = db.Column('Active', db.Integer)
     balance = db.Column('Balance', db.Float)
