@@ -10,7 +10,7 @@ class UserDetails(db.Model):
     firstname = db.Column('FirstName', db.String(100))
     lastname = db.Column('LastName', db.String(100))
     email = db.Column('Email', db.String(100))
-    phone = db.Column('PhoneNumber', db.Integer)
+    phone = db.Column('PhoneNumber', db.String(100))
     dob = db.Column('DOB', db.Date)
 
     def __init__(self, firstname, lastname, email, phone, dob):
