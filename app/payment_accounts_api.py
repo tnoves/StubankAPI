@@ -67,7 +67,7 @@ def update_payment_account(id):
     return payment_account_schema.jsonify(payment_account)
 
 #endpoint to delete payment account
-@payment_accounts_api.route('/transaction/<id>', methods=['DELETE'])
+@payment_accounts_api.route('/payment_account/<id>', methods=['DELETE'])
 def delete_payment_account(id):
     payment_account = PaymentAccounts.query.get(id)
     db.session.delete(payment_account)
