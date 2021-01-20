@@ -65,7 +65,7 @@ def get_transaction(id):
     return transaction_schema.jsonify(transaction)
 
 # endpoint to get all transactions for specified card
-@transaction_api.route('/transaction/card/<id>', methods=['GET'])
+@transaction_api.route('/transaction/card/<card_number>', methods=['GET'])
 def get_all_transactions(card_number):
     transactions = Transactions.query.filter(Transactions.card_number == card_number)
     result = transactions_schema.dump(transactions)
