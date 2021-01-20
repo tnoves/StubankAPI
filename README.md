@@ -430,7 +430,7 @@ Creates user, user_details and account automatically
 <a name="get-all-transactions"></a>
 #### Get all transactions belonging to card
 
-`GET 127.0.0.1:5000/transaction/card/<id>`
+`GET 127.0.0.1:5000/transaction/card/<card_number>`
 
 ###### Response
 
