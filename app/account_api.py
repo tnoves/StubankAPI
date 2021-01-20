@@ -8,7 +8,7 @@ account_api = Blueprint('account_api', __name__)
 class Accounts(db.Model):
     __tablename__ = 'Accounts'
     account_id = db.Column('AccountID', db.Integer, primary_key=True)
-    account_number = db.Column('AccountNumber', db.Integer, unique=True)
+    account_number = db.Column('AccountNumber', db.String, unique=True)
     sort_code_id = db.Column('SortCodeID', db.Integer)
 
     def __init__(self, account_number, sort_code_id):
