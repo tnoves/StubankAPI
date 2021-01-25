@@ -48,6 +48,12 @@ def get_payment_account(id):
     payment_account = PaymentAccounts.query.get(id)
     return payment_account_schema.jsonify(payment_account)
 
+@payment_accounts_api.route('/payment_account/user_details/<user_details_id>', methods=['GET'])
+def get_payment_account_user_details(user_details_id):
+    user = PaymentAccounts.query.filter(PaymentAccounts.user_details_id == user_details_id).first()
+    result = payment_account_schema.dump(user)
+    return payment_account_schema.jsonify(result)
+
 # endpoint to update a specific payment account from id
 @payment_accounts_api.route('/payment_account/<id>', methods=['PUT'])
 def update_payment_account(id):

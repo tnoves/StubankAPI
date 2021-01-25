@@ -82,7 +82,7 @@ def get_user(id):
     user = Users.query.get(id)
     return user_schema.jsonify(user)
 
-@user_api.route('/user/<username>', methods=['GET'])
+@user_api.route('/user/username/<username>', methods=['GET'])
 def get_user_username(username):
     user = Users.query.filter(Users.username == username).first()
     result = user_schema.dump(user)
