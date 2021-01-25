@@ -30,7 +30,7 @@ class Users(db.Model):
 class UsersSchema(ma.Schema):
     user_details = ma.Nested(UserDetailsSchema)
     class Meta:
-        additional = ('id', 'username', 'user_details_id', 'account_id')
+        additional = ('id', 'username', 'password', 'user_details_id', 'account_id')
 
 # Initialise schemas
 user_schema = UsersSchema()
@@ -81,6 +81,12 @@ def create_user():
 def get_user(id):
     user = Users.query.get(id)
     return user_schema.jsonify(user)
+
+@user_api.route('/user/<username>', methods=['GET'])
+def get_user_username(username):
+    user = Users.query.filter(Users.username == username).first()
+    result = user_schema.dump(user)
+    return jsonify(result)
 
 # endpoint to get all users
 @user_api.route('/user/all', methods=['GET'])
