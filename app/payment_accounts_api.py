@@ -25,6 +25,7 @@ class PaymentAccountsSchema(ma.Schema):
 
 # Initialise schemas
 payment_account_schema = PaymentAccountsSchema()
+payment_account_schema = PaymentAccountsSchema(many=True)
 
 @payment_accounts_api.route('/payment_account/', methods=['POST'])
 def create_payment_account():
@@ -50,8 +51,9 @@ def get_payment_account(id):
 
 @payment_accounts_api.route('/payment_account/user_details/<user_details_id>', methods=['GET'])
 def get_payment_account_user_details(user_details_id):
-    user = PaymentAccounts.query.filter(PaymentAccounts.user_details_id == user_details_id).all()
-    result = payment_account_schema.dump(user)
+    print(user_details_id)
+    payment_accounts = PaymentAccounts.query.filter(PaymentAccounts.user_details_id == user_details_id).all()
+    result = payment_account_schema.dump(payment_accounts)
     return payment_account_schema.jsonify(result)
 
 # endpoint to update a specific payment account from id
