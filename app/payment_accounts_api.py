@@ -50,7 +50,7 @@ def get_payment_account(id):
 
 @payment_accounts_api.route('/payment_account/user_details/<user_details_id>', methods=['GET'])
 def get_payment_account_user_details(user_details_id):
-    user = PaymentAccounts.query.filter(PaymentAccounts.user_details_id == user_details_id).first()
+    user = PaymentAccounts.query.filter(PaymentAccounts.user_details_id == user_details_id).all()
     result = payment_account_schema.dump(user)
     return payment_account_schema.jsonify(result)
 
