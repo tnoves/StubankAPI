@@ -96,14 +96,15 @@ def get_all_cards(id):
 def update_card(id):
     try:
         card = Cards.query.get(id)
-        active = request.json['username']
-        balance = request.json['firstname']
+        active = request.json['active']
+        balance = request.json['balance']
 
         card.active = active
         card.balance = balance
 
         db.session.commit()
     except Exception as e:
+        print (e)
         db.session.rollback()
         db.session.flush()
 

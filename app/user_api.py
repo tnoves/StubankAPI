@@ -88,6 +88,12 @@ def get_user_username(username):
     result = user_schema.dump(user)
     return jsonify(result)
 
+@user_api.route('/user/from/details/<user_details>', methods=['GET'])
+def get_user_details_id(user_details):
+    user = Users.query.filter(Users.user_details_id == user_details).first()
+    result = user_schema.dump(user)
+    return jsonify(result)
+
 # endpoint to get all users
 @user_api.route('/user/all', methods=['GET'])
 def get_all_users():
